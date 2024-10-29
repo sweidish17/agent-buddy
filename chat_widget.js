@@ -1,5 +1,5 @@
 (function () {
-    console.log("Chat widget script version 1.0.2 loaded!");
+    console.log("Chat widget script version 1.0.3 loaded!");
 
     // Create the chat widget container
     const chatContainer = document.createElement('div');
@@ -15,6 +15,7 @@
     chatContainer.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
     chatContainer.style.display = 'flex';
     chatContainer.style.flexDirection = 'column';
+    chatContainer.style.fontFamily = 'Arial, sans-serif';
 
     // Chat header
     const header = document.createElement('div');
@@ -26,8 +27,10 @@
     header.style.fontWeight = 'bold';
     header.style.textAlign = 'center';
     header.onclick = function () {
-        chatBody.style.display = chatBody.style.display === 'none' ? 'block' : 'none';
-        inputContainer.style.display = inputContainer.style.display === 'none' ? 'flex' : 'none';
+        const isChatBodyVisible = chatBody.style.display === 'none';
+        chatBody.style.display = isChatBodyVisible ? 'block' : 'none';
+        inputContainer.style.display = isChatBodyVisible ? 'flex' : 'none';
+        console.log(`Chat widget toggled to ${isChatBodyVisible ? 'visible' : 'hidden'}`);
     };
 
     // Chat body
@@ -128,7 +131,12 @@
             },
             body: JSON.stringify({ message: message })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log("Received response from /api/message:", data);
                 addMessageToChat(data.response, 'bot');
@@ -162,7 +170,12 @@
             },
             body: JSON.stringify({ contact_info: contactInfo })
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server responded with status ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log("Received response from /api/lead:", data);
                 addMessageToChat(data.message, 'bot');
