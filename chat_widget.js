@@ -4,8 +4,8 @@
     // Configuration Variables
     const API_BASE_URL = 'http://127.0.0.1:8002';  // Update if deployed
     const API_KEY = 'my_test_key';  // As per your current setup
-    const WHATSAPP_NUMBER = '1234567890';  // Replace with your WhatsApp number
-    const WHATSAPP_MESSAGE = encodeURIComponent("Hello, I would like to chat with you!");
+    const WHATSAPP_NUMBER = '447703824916';  // Replace with your WhatsApp number
+    const WHATSAPP_MESSAGE = encodeURIComponent("Hello, I would like to chat with you! How can I help today?");
 
     // Create the chat widget container
     const chatContainer = document.createElement('div');
