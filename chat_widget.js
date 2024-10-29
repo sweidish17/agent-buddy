@@ -1,4 +1,6 @@
 (function () {
+    console.log("Chat widget script version 1.0.2 loaded!");
+
     // Create the chat widget container
     const chatContainer = document.createElement('div');
     chatContainer.id = 'chat-widget';
@@ -11,6 +13,8 @@
     chatContainer.style.borderRadius = '8px';
     chatContainer.style.overflow = 'hidden';
     chatContainer.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+    chatContainer.style.display = 'flex';
+    chatContainer.style.flexDirection = 'column';
 
     // Chat header
     const header = document.createElement('div');
@@ -33,12 +37,17 @@
     chatBody.style.overflowY = 'auto';
     chatBody.style.padding = '10px';
     chatBody.style.backgroundColor = '#fff';
+    chatBody.style.display = 'flex';
+    chatBody.style.flexDirection = 'column';
 
     // Input container
     const inputContainer = document.createElement('div');
     inputContainer.style.display = 'none';
     inputContainer.style.padding = '10px';
     inputContainer.style.borderTop = '1px solid #ccc';
+    inputContainer.style.display = 'flex';
+    inputContainer.style.justifyContent = 'space-between';
+    inputContainer.style.alignItems = 'center';
 
     // Text input
     const inputField = document.createElement('input');
@@ -75,11 +84,24 @@
     sendButton.onclick = function () {
         const message = inputField.value.trim();
         if (message) {
+            console.log("User sent message:", message);
             addMessageToChat(message, 'user');
-            sendMessageToBackend(message);
             inputField.value = '';
+            if (message.toLowerCase() === '/lead') {
+                console.log("Detected '/lead' command.");
+                promptForLead();
+            } else {
+                sendMessageToBackend(message);
+            }
         }
     };
+
+    // Allow sending messages with Enter key
+    inputField.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendButton.click();
+        }
+    });
 
     // Function to add message to chat
     function addMessageToChat(message, sender) {
@@ -97,21 +119,57 @@
 
     // Function to send message to the back end
     function sendMessageToBackend(message) {
+        console.log("Sending message to backend:", message);
         fetch('http://127.0.0.1:8002/api/message', {  // Update URL if deployed
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': 'my_test_key' 
+                'x-api-key': 'your_secure_api_key'  // Replace with actual API key
             },
             body: JSON.stringify({ message: message })
         })
             .then(response => response.json())
             .then(data => {
+                console.log("Received response from /api/message:", data);
                 addMessageToChat(data.response, 'bot');
             })
             .catch(error => {
                 console.error('Error:', error);
                 addMessageToChat('Error connecting to chat server.', 'bot');
+            });
+    }
+
+    // Function to prompt for lead information
+    function promptForLead() {
+        const leadInfo = prompt("Please enter your contact information (e.g., email):");
+        console.log("Lead info entered:", leadInfo);
+        if (leadInfo) {
+            addMessageToChat(leadInfo, 'user');
+            sendLeadToBackend(leadInfo);
+        } else {
+            console.log("No lead information entered.");
+        }
+    }
+
+    // Function to send lead information to the back end
+    function sendLeadToBackend(contactInfo) {
+        console.log("Sending lead info to backend:", contactInfo);
+        fetch('http://127.0.0.1:8002/api/lead', {  // Update URL if deployed
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': 'your_secure_api_key'  // Replace with actual API key
+            },
+            body: JSON.stringify({ contact_info: contactInfo })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received response from /api/lead:", data);
+                addMessageToChat(data.message, 'bot');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                addMessageToChat('Error capturing lead.', 'bot');
             });
     }
 })();
