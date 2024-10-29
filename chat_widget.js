@@ -124,7 +124,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': 'your_secure_api_key'  // Replace with actual API key
+                'x-api-key': 'my_test_key'  // Replace with actual API key
             },
             body: JSON.stringify({ message: message })
         })
@@ -158,7 +158,7 @@
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': 'your_secure_api_key'  // Replace with actual API key
+                'x-api-key': 'my_test_key'  // Replace with actual API key
             },
             body: JSON.stringify({ contact_info: contactInfo })
         })
