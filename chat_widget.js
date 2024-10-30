@@ -30,7 +30,7 @@ startChatButton.onclick = function (event) {
   const whatsappNumber = whatsappNumberInput.value.trim();
   if (whatsappNumber) {
     // Send the number to the backend
-    fetch('http://localhost:8002', {
+    fetch('http://localhost:8002/api/start_whatsapp_chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
